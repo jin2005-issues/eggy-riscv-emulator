@@ -108,7 +108,7 @@ function Memory.read(addr, n_bytes)
 
 	local num = 0;
 	for i = 0, n_bytes-1 do
-		num = num + Num.lshift(Memory.readRaw(addr + i), i * 8)
+		num = num + ((Memory.readRaw(addr + i) << (i * 8))&0xFFFFFFFF)
 	end
 
 	return num

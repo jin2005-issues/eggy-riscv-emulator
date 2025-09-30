@@ -21,8 +21,8 @@ function CLINT.update(ticks) -- set the timer value and things
 	CLINT.timer_lo = CLINT.timer_lo + ticks
 
 	if CLINT.timer_lo >= 0x100000000 then
-		CLINT.timer_hi = CLINT.timer_hi + math.floor(CLINT.timer_lo / 0x100000000)
-		CLINT.timer_lo = CLINT.timer_lo % 0x100000000
+		CLINT.timer_hi = CLINT.timer_hi + (CLINT.timer_lo >> 32)
+		CLINT.timer_lo = CLINT.timer_lo & 0xFFFFFFFF
 	end
 
 	if (CLINT.timer_hi > CLINT.cmp_hi) or

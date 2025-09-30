@@ -1,0 +1,12 @@
+{
+    "projectName": "Linux", 
+    "projectID": "68cf9f4c0cc3af1e84aab8b7", 
+    "serverPort": 29065, 
+    "syncEnabled": true, 
+    "excludePatterns": [
+        ".vscode", 
+        ".git", 
+        "EggyAPI.lua"
+    ], 
+    "version": "1.0.0"
+}

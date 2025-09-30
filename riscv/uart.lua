@@ -4,13 +4,14 @@ UART.inputBuffer = {}
 UART.base = 0x10000000
 UART.length = 0x100
 
-local stdin_waiting = require('src.nonblock')
+local stdin_waiting = require('riscv.nonblock')
 
+--deprecated
 function UART.update()
 	if stdin_waiting and stdin_waiting() then
 		local char = io.read(1)
 
-		UART.inputBuffer[#UART.inputBuffer+1] = string.byte(char)
+		UART.inputBuffer[#UART.inputBuffer + 1] = string.byte(char)
 	end
 end
 
@@ -26,20 +27,22 @@ end
 function UART.read()
 	if #UART.inputBuffer > 0 then
 		local val = UART.inputBuffer[1]
-		table.remove(UART.inputBuffer,1)
+		table.remove(UART.inputBuffer, 1)
+		--print("UART read: "..string.char(val).."|"..tostring(val))
 		return val
 	else
 		return 0 -- shouldn't happen, but whatever.
 	end
 end
 
+lineBuffer = ""
 function UART.write(byte)
-	io.write(string.char(byte))
-	io.flush()
+	Terminal:write(string.char(byte))
+	--print("UART "..string.char(byte).."|"..tostring(byte))
 end
 
 Memory.register(UART.base, UART.length, {
-	read = function (addr)
+	read = function(addr)
 		if addr == 0 then
 			return UART.read()
 		elseif addr == 5 then
@@ -47,16 +50,16 @@ Memory.register(UART.base, UART.length, {
 		end
 		return 0 -- you can have a 0
 	end,
-	write = function (addr, byte)
+	write = function(addr, byte)
 		if addr == 0 then -- io
 			UART.write(byte)
 		end
 		-- ignore
 	end,
-	validRead = function ()
+	validRead = function()
 		return true -- just ignore anything we don't have implemented :)
 	end,
-	validWrite = function ()
+	validWrite = function()
 		return true -- again, ignore what we don't have implemented: act like it's there
 	end
 })

@@ -1,5 +1,9 @@
 Trap = {}
 
+local Hart
+function Trap.setHart(hart)
+	Hart = hart
+end
 function Trap.raise(trap, value)
 	assert(CSRs.write(0x342, trap)); -- mcause
 	assert(CSRs.write(0x343, value)); -- mtval
